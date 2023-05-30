@@ -7,25 +7,33 @@ class MainWindow : public QMainWindow {
 	void stopButtonClick();
 	void runClock();
 	private:
-	QLabel *timerLabel;
+	QLabel *timerLabelSeconds;
+	QLabel *timerLabelMinutes;
 	QPushButton *startButton;
 	QPushButton *stopButton;
 	QTimer *timer;
-	int seconds;
+	int seconds,minutes;
 };
 
 MainWindow::MainWindow(){
 	setFixedSize(900,500);
 	QFont buttonFont("Time",16,QFont::Bold);
 	setWindowTitle("Anim v0.1");
-	timerLabel= new QLabel(this);
-	timerLabel->setText("Test QLabel");
-	timerLabel->setGeometry(50,100,350,120);
-	timerLabel->setFont(buttonFont);
+	timerLabelSeconds= new QLabel(this);
+	timerLabelSeconds->setText("Test QLabel");
+	timerLabelSeconds->setGeometry(100,100,350,120);
+	timerLabelSeconds->setFont(buttonFont);
+	
+	timerLabelMinutes= new QLabel(this);
+	timerLabelMinutes->setText("00");
+	timerLabelMinutes->setGeometry(70,100,350,120);
+	timerLabelMinutes->setFont(buttonFont);
+	
 	timer = new QTimer(this);
-	timer->setInterval(1000);
+	timer->setInterval(100);
 	seconds=0;
 	
+
 	startButton = new QPushButton("Start",this);
 	startButton->setGeometry(50,220,70,30);
 	startButton->setFont(buttonFont);
@@ -39,18 +47,27 @@ MainWindow::MainWindow(){
 	connect (timer, &QTimer::timeout,this,&MainWindow::runClock);}
 
 void MainWindow::startButtonClick(){
-	timerLabel->setText("Start");
 	timer->start();
 }
 void MainWindow::stopButtonClick(){
-	timerLabel->setText("Stop");
 	timer->stop();
 }
 void MainWindow::runClock(){
 	seconds++;
-	QString strSeconds =  QString::number(seconds);
-	timerLabel -> setText(strSeconds);
+	if (seconds<10){
+	QString strSeconds = "0"+ QString::number(seconds);
+	timerLabelSeconds -> setText(strSeconds);}
+	else{
+    QString strSeconds = QString::number(seconds);
+	timerLabelSeconds -> setText(strSeconds);}
+	if (seconds==60){
+		minutes++;
+		seconds=0;
+		QString strMinutes = QString::number(minutes);
+		timerLabelMinutes -> setText(strMinutes);}
+	
 }
+
 int main(int argc,char *argv[]){
 	QApplication app(argc,argv);
 	MainWindow mainWin;
